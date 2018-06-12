@@ -1,35 +1,32 @@
 const fs = require('fs');
-// const qs = require('querystring');
+const qs = require('querystring');
+const path = require('path');
 
 module.exports = {
   handleRequest(request, response) {
     response.statusCode = 200;
     response.setHeader('Content-Type', 'text/html');
-    let readable;
     let wridable;
-    // let body = '';
+    let body = '';
     // let par;
     switch (request.method) {
       case 'GET':
-        readable = fs.createReadStream('./form.html');
-        readable.on('data', chunk => {
-          // console.log(chunk);
-        });
-        // console.log(a);
-        readable.pipe(response);
+        fs.createReadStream(path.normalize('./form.html')).pipe(response);
         break;
       case 'POST':
-        request.on('data', chunk => {
-          // body += chunk;
-          // par = JSON.stringify(body);
-          // body.push(data);
-          // console.log(par);
-          // body = qs.parse(body);
+        wridable = fs.createWriteStream(path.normalize('./base.json'), {
+          flags: 'a',
         });
 
-        wridable = fs.createWriteStream('./base.json', { flags: 'a' });
-        request.pipe(wridable);
-        request.pipe(response);
+        request.on('data', chunk => {
+          body += chunk;
+        });
+
+        request.on('end', () => {
+          body = JSON.stringify(qs.parse(body));
+          wridable.write(body);
+          fs.createReadStream(path.normalize('./form.html')).pipe(response);
+        });
         break;
       default:
         request.statusCode = 404;
