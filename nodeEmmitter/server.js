@@ -1,6 +1,6 @@
 const http = require('http');
-const app = require('./src/app');
+const handleRequest = require('./src/app');
 
 // console.log(url);
 
-http.createServer(app.hendlRequest).listen(3000);
+http.createServer(handleRequest).listen(3000);
