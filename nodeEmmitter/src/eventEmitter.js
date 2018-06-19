@@ -3,6 +3,7 @@ class EventEmitter {
     this._events = Object.create(null);
     this._subsribs = Object.create(null);
   }
+
   addEvents(nametitle) {
     if (!this._events[nametitle]) {
       this._events[nametitle] = [];
@@ -15,9 +16,9 @@ class EventEmitter {
       // this._events[name].push(fn);
     }
     this._events[name].push(fn);
-    // console.log(fn);
   }
-  remove(name, fn) {
+
+  off(name, fn) {
     if (this._events[name]) {
       this._events[name] = this._events[name].filter(el => {
         if (el !== fn) {
@@ -28,10 +29,11 @@ class EventEmitter {
 
       if (!this._events[name].length) {
         delete this._events[name];
+        return true;
       }
-    } else {
-      return; // if not proprety
+      return true;
     }
+    return false;
   }
 
   emit(name, data) {
@@ -43,4 +45,5 @@ class EventEmitter {
     }
   }
 }
+
 module.exports = EventEmitter;

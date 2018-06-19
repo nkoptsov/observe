@@ -7,13 +7,12 @@ class User {
     this.pushArticles = this.pushArticles.bind(this);
   }
   pushArticles(newInformation) {
-    // console.log(newArticles.topic);
     this.articles.push(newInformation[0]);
     this.addSubscription(newInformation[1]);
   }
   addSubscription(inform) {
     const flag = this.subscription.find(element => {
-      if (element._idNews === inform._idNews) {
+      if (element._id === inform._id) {
         return true;
       }
       return false;
@@ -24,7 +23,7 @@ class User {
   }
   removeSubscription(idNews) {
     this.subscription = this.subscription.filter(element => {
-      if (element._idNews === idNews) {
+      if (element._id === idNews) {
         return false;
       }
       return true;

@@ -1,38 +1,39 @@
 const Control = require('./src/Control');
-
-// /^(\/user\/\w+)$/  -> '/user/id'
-// ^((\/news\/\w+)|(\/user\/\w+))$ -> '/user/id' and '/news/id'
-// ^\/subscription$ ->  '/subscription'
-// ^((\/export)|(\/subscription))$ - /subscription and '/export'
-// ^((\/unsubscribe\/\w+)|(\/subscribe\/\w+))$
+const Response = require('./src/Response');
 
 const arrayRegExp = [
   {
     reg: /^(\/news\/[^\/]+)$/g, //  /^(\/news\/\w+)$/g,
     method: Control.getNews,
+    response: Response.sendJSON,
   },
   {
     reg: /^(\/user\/[^\/]+)$/g,
     method: Control.getUser,
+    response: Response.sendJSON,
   },
   {
     reg: /^(\/user\/[^\/]+)\/subscription$/g,
     method: Control.getUserSubscription,
+    response: Response.sendJSON,
   },
   {
     reg: /^(\/user\/[^\/]+)\/export$/g,
     method: Control.getUserJSON,
+    response: Response.sendFile,
   },
   {
     reg: /^(\/news\/[^\/]+)\/unsubscribe\/[^\/]+$/g,
     method: Control.unsubscription,
+    response: Response.sendOk,
   },
   {
     reg: /^(\/news\/[^\/]+)\/subscribe\/[^\/]+$/g,
     method: Control.subscription,
+    response: Response.sendOk,
   },
 ];
-function handleUrl(str) {
+function handleUrl(str, ans) {
   const trush = arrayRegExp.find(elem => {
     if (str.match(elem.reg)) {
       return true;
@@ -47,8 +48,14 @@ function handleUrl(str) {
       }
       return false;
     });
-    return trush.method(...arr);
+    const objResp = trush.method(...arr);
+    if (objResp) {
+      trush.response(ans, objResp);
+    } else {
+      return Response.sendBad(ans);
+    }
+  } else {
+    return Response.sendBad(ans);
   }
-  return 'Not Found';
 }
 module.exports = handleUrl;

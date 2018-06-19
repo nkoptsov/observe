@@ -1,13 +1,10 @@
 const User = require('./User');
 const News = require('./News');
 const EventEmitter = require('./EventEmitter');
-const {
-  transformation,
-  createFile,
-  readFile,
-} = require('./addFunction/transformation');
 const findElement = require('./addFunction/findElement');
+const RandomNews = require('./RandomNews');
 
+const rand = new RandomNews();
 const Users = [];
 const newsFlow = [];
 const eventEmitter = new EventEmitter();
@@ -24,88 +21,82 @@ const news3 = new News('3', 'bbc-news', eventEmitter);
 newsFlow.push(news1);
 newsFlow.push(news2);
 newsFlow.push(news3);
-
-news3.pushNewNews('goodDay', ' me please my coode');
-news2.pushNewNews(
-  'football',
-  'Официально: Матч Албания — Украина состоится 3 июня',
-);
-news1.pushNewNews('ggggg', 'sdffsddsd');
-news2.pushNewNews('hokey', 'Ovechkin winned stanley cup');
-news1.pushNewNews('fuck', 'fuck');
+const interval = setInterval(() => {
+  const obj = rand.rundom(newsFlow);
+  newsFlow[obj[0]].pushNewNews(obj[1], obj[2]);
+}, 5000);
+setTimeout(() => {
+  clearInterval(interval);
+}, 120000);
 
 class Control {
-  // constructor() {
-  //   this.getUser = this.getUser.bind(this);
-  //   this.getUserSubscription = this.getUserSubscription.bind(this);
-  //   this.getUserJSON = this.getUserJSON.bind(this);
-  //   this.unsubscribe = this.unsubscribe.bind(this);
-  //   this.subscribe = this.subscribe.bind(this);
-  // }
-  //   static find(arraySearch, elementSearch) {
-  //   const result = arraySearch.find(element => {
-  //     if (element._id === userId) {
-  //       return true;
-  //     }
-  //     return false;
-  //   });
-  //   return result;
-  // }
   static getUser(userId) {
     const result = findElement(Users, userId);
-    return transformation({
-      id: result._id,
-      name: result.name,
-      articles: result.articles,
-    });
+    if (result) {
+      return {
+        id: result._id,
+        name: result.name,
+        articles: result.articles,
+      };
+    }
+    return false;
   }
   static getUserSubscription(userId) {
     const arr = findElement(Users, userId);
     if (arr) {
-      return transformation(arr.subscription);
+      return arr.subscription;
     }
-    return 'not subscribes';
+    return false;
   }
 
   static getUserJSON(userId) {
-    let result = findElement(Users, userId);
-    result = transformation({
-      id: result._id,
-      name: result.name,
-      articles: result.articles,
-    });
-    return createFile(result)
-      .then(data => {
-        console.log(data);
-        return readFile();
-      })
-      .then(res => {
-        console.log(res);
-      });
+    const result = findElement(Users, userId);
+    if (result) {
+      return {
+        id: result._id,
+        name: result.name,
+        articles: result.articles,
+      };
+    }
+    return false;
   }
   static getNews(newsId) {
     const result = findElement(newsFlow, newsId);
-    return transformation({
-      idNews: result._idNews,
-      title: result.title,
-      articles: result.articles,
-    });
+    if (result) {
+      return {
+        id: result._id,
+        name: result.name,
+        articles: result.articles,
+      };
+    }
+    return false;
   }
   static subscription(newsId, userId) {
     const user = findElement(Users, userId);
-    eventEmitter.on(newsId, user.pushArticles);
-    // return ?
+    const news = findElement(newsFlow, newsId);
+    if (user && news) {
+      eventEmitter.on(news._id, user.pushArticles);
+      return true;
+    }
+    return false;
   }
-  static unsubscribe(newsId, userId) {
+  static unsubscription(newsId, userId) {
     const user = findElement(Users, userId);
-    user.removeSubscription(newsId);
-    eventEmitter.remove(newsId, user.pushArticles);
-    // return ?
+    const news = findElement(newsFlow, newsId);
+    if (user && news) {
+      if (eventEmitter.off(news._id, user.pushArticles)) {
+        user.removeSubscription(newsId);
+        return true;
+      }
+    }
+    return false;
   }
 }
-Control.subscription('2', '1'); //idnews id_user
+
+Control.subscription('2', '1');
 Control.subscription('3', '1');
 Control.subscription('3', '2');
 Control.subscription('3', '3');
 Control.subscription('1', '3');
+
 module.exports = Control;

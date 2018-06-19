@@ -1,28 +1,31 @@
 const fs = require('fs');
+const path = require('path');
 
 function transformation(object) {
   const array = [object];
   return JSON.stringify(array);
 }
-function workFile() {}
-function createFile(data, file = '../files/Obect.json') {
-  console.log(typeof data, typeof file);
+
+function createFile(data, file = path.normalize('./obect.json')) {
   return new Promise((resolve, reject) => {
     fs.writeFile(file, data, err => {
       if (err) {
+        // console.log(err);
         throw reject;
       }
-      console.log('hesaved');
-      resolve;
+      resolve();
+      // resolve;
     });
   });
 }
-function readFile(path = '../files/Obect.json', coding = 'Utf8') {
+
+function readFile(file = path.normalize('./obect.json'), coding = 'utf8') {
   return new Promise((resolve, reject) => {
-    fs.readFile(path, coding, (err, data) => {
+    fs.readFile(file, coding, (err, data) => {
       if (err) return reject;
-      return resolve;
+      return resolve(data);
     });
   });
 }
+
 module.exports = { transformation, createFile, readFile };
