@@ -1,5 +1,6 @@
 class User {
-  constructor(name) {
+  constructor(id, name) {
+    this._id = id;
     this._name = name;
     this.openNewNews = this.openNewNews.bind(this);
   }
@@ -7,7 +8,19 @@ class User {
     console.log(this._name, topicName, data);
   }
 }
-
+class Jernalist {
+  constructor(name, topic) {
+    this.name = name;
+    this.topic = topic;
+    this.news = {};
+  }
+  pushNews(topic, news) {
+    if (!this.news[topic]) {
+      this.news[topic] = [];
+      this.news[topic].push(news);
+    }
+  }
+}
 class News {
   constructor(eventEm) {
     this.newsArray = [
@@ -17,8 +30,12 @@ class News {
       'Винни пух',
       'talk is cheap show me the code',
     ];
-    this._topics = ['it', 'sport', 'garden'];
+    this._topics = ['it', 'sport'];
     this._ev = eventEm;
+    console.log(this._ev);
+  }
+  addCategory(topics) {
+    this._topics.push(topics);
   }
   feedNews() {
     const numberNews = this.randomiser(this.newsArray);
@@ -55,12 +72,11 @@ class EventEmitter {
       if (!this._events[name].length) {
         delete this._events[name];
       }
+    } else {
+      return undefined;
     }
   }
-  // once(name, fn) {
-  // -- add function
-  // -- how delete function after first using
-  // }
+
 
   emit(name, data) {
     if (this._events[name]) {
@@ -71,23 +87,37 @@ class EventEmitter {
     }
   }
 }
+class Contr {
+  constructor() {
+  }
+  getUser() { }
+  getUserSubscription() { }
+  getUserJN() { }
+  getNews() { }
+  subscription() { }
+}
 
+const Users = [];
+const News = [];
 const user1 = new User('zasranec');
 const user2 = new User('takoe');
 const user3 = new User('goood');
-
+Users.push(user1);
+Users.push(user1);
+Users.push(user1);
 const eventEmitter = new EventEmitter();
+const news = new News(eventEmitter);
+console.log(news);
 eventEmitter.on('sport', user1.openNewNews);
 eventEmitter.on('it', user1.openNewNews);
 eventEmitter.on('it', user2.openNewNews);
 eventEmitter.on('it', user3.openNewNews);
-eventEmitter.on('garden', user3.openNewNews);
-eventEmitter.on('garden', user1.openNewNews);
-const news = new News(eventEmitter);
+eventEmitter.on('ogorod', user3.openNewNews);
+
 // const news2 = new News('sport', eventEmitter);
 news.feedNews();
 news.feedNews();
-
 eventEmitter.del('sport', user1.openNewNews);
-eventEmitter.del('garden', user1.openNewNews);
-news.feedNews();
+
+const userArray = [];
+const newsArray = [];

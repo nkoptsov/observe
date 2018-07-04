@@ -1,39 +1,44 @@
 // import News from './News';
 // import User from '.User.js';
 
-// class News {
-//   constructor() {
-//     this._url = [];
-//     this._news = {};
-//   }
+class News {
+  constructor(observer) {
+    this._url = [];
+    this._news = {};
+    // this.observer = observer;
+  }
 
-//   get url() {
-//     return this._url;
-//   }
+  get url() {
+    return this._url;
+  }
 
-//   set url(newUrl) {
-//     if (typeof newUrl === 'string') {
-//       const url = new URL(newUrl);
-//       this._url.push(url);
-//       console.log(url.search);
-//       const a = new URLSearchParams(url.search);
-//       console.log(a.get('sources'));
-//       this._news[url.get('sources')];
-//     }
-//     Error('not a string');
-//   }
+  set url(newUrl) {
+    if (typeof newUrl === 'string') {
+      const url = new URL(newUrl);
+      this._url.push(url);
+      console.log(url.search);
+      const a = new URLSearchParams(url.search);
+      console.log(a.get('sources'));
+      this._news[url.get('sources')];
+    }
+    Error('not a string');
+  }
 
-//   // refreshNews() {
-//   //   // maybe this.url
-//   //   this._url.forEach(url => {
-//   //     if (this._news.)
-//   //   });
-//   // }
+  refreshNews() {
+    // maybe this.url
+    if (this._url.lenght) {
+      this._url.forEach(url => {
+        // if (this._news.)
+      });
+    } else {
+      Error('not a url');
+    }
+  }
 
-//   n(newObserve) {
-//     this.feedNews(newObserve());
-//   }
-// }
+  n(newObserve) {
+    this.feedNews(newObserve());
+  }
+}
 
 class User {
   constructor(name) {
@@ -53,31 +58,33 @@ class User {
   }
 }
 
-class News {
-  constructor() {
-    this.newsArray = [
-      'Зидан покинул пост главного тренера Реала',
-      'Официально: Матч Албания — Украина состоится 3 июня',
-      'Венгер готов продолжить карьеру тренера и ждет "новых испытаний',
-      'Винни пух',
-      'talk is cheap show me the code',
-    ];
-  }
+// class News {
+//   constructor() {
+//     this.newsArray = [
+//       'Зидан покинул пост главного тренера Реала',
+//       'Официально: Матч Албания — Украина состоится 3 июня',
+//       'Венгер готов продолжить карьеру тренера и ждет "новых испытаний',
+//       'Винни пух',
+//       'talk is cheap show me the code',
+//     ];
+//   }
 
-  feedNews() {
-    const numberNews = Math.floor(Math.random() * this.newsArray.length);
-    return this.newsArray[numberNews];
-  }
-}
+//   feedNews() {
+//     const numberNews = Math.floor(Math.random() * this.newsArray.length);
+//     return this.newsArray[numberNews];
+//   }
+// }
 
 class Observe {
   constructor() {
     this.array = [];
-    this.onceArray = [];
+    this._onceArray = [];
   }
+
   add(cb) {
     this.array.push(cb);
   }
+
   count() {
     return this.array.length;
   }
